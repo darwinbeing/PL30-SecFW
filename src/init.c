@@ -34,7 +34,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 
-#include "p33FJ16GS504.h"
+#include <p33Fxxxx.h>
 #include "init.h"
 #include "main.h"
 
@@ -49,11 +49,17 @@ void init_CLOCK() {
 
     /* Configure PLL prescaler, PLL postscaler, PLL divisor */
     PLLFBD = 41; /* M = PLLFBD + 2 */
-    CLKDIVbits.PLLPOST = 0; /* N1 = 2 */
+    CLKDIVbits.PLLPOST = 1; /* N1 = 4 */
     CLKDIVbits.PLLPRE = 0; /* N2 = 2 */
 
+	__builtin_write_OSCCONH(1); //init clock switch to internal
+	__builtin_write_OSCCONL(1); //start clock switch process    
     while (OSCCONbits.LOCK != 1); // Wait for PLL to Lock
-
+//    __builtin_write_OSCCONH(0x03);    // Initiate Clock Switch to Primary Oscillator (EC) with PLL (NOSC=0b011)
+//    __builtin_write_OSCCONL(0x01);    // Start clock switching
+//    
+//    while(OSCCONbits.COSC != 0b011);  // Wait for PLL to lock
+//    while(OSCCONbits.LOCK != 1);
     /* Config ADC and PWM clock for 120MHz
        ACLK = ((REFCLK * 16) / APSTSCLR ) = (7.37 * 16) / 1 = 117.92 MHz  */
 
@@ -77,21 +83,21 @@ void init_PORTS() {
     __builtin_write_OSCCONL(OSCCON & ~(1 << 6)); // Unlock Registers (Bit 6 in OSCCON)
 
     //ODCCbits.ODCC13 = 1;		// configure RP29/RC13 (TxD) as open drain
-    RPINR18bits.U1RXR = 16; // U1RX->RP16
-    RPOR14bits.RP29R = 3; // U1TX->RP29
+//    RPINR18bits.U1RXR = 16; // U1RX->RP16
+//    RPOR14bits.RP29R = 3; // U1TX->RP29
 
     // configure comparators
-    RPOR16bits.RP32R = 39; // remap comparator 1 output to virtual pin RP32
-    RPOR16bits.RP33R = 40; // remap comparator 2 output to virtual pin RP33
-    RPINR29bits.FLT1R = 32; // assign PWM fault1 input to virtual pin RP32
-    RPINR30bits.FLT2R = 33; // assign PWM fault2 input to virtual pin RP33
-    RPINR31bits.FLT4R = 5; // assign PWM fault4 input to pin RP5=RB5
+//    RPOR16bits.RP32R = 39; // remap comparator 1 output to virtual pin RP32
+//    RPOR16bits.RP33R = 40; // remap comparator 2 output to virtual pin RP33
+//    RPINR29bits.FLT1R = 32; // assign PWM fault1 input to virtual pin RP32
+//    RPINR30bits.FLT2R = 33; // assign PWM fault2 input to virtual pin RP33
+//    RPINR31bits.FLT4R = 5; // assign PWM fault4 input to pin RP5=RB5
 
     // remap PWM4L to Oring Charge Pump
-    RPOR12bits.RP24R = 45; // remap PWM4L output to RP24 (Fault Oring actual)
+//    RPOR12bits.RP24R = 45; // remap PWM4L output to RP24 (Fault Oring actual)
 
     // remap PWM4H to CS_BUS output
-    RPOR11bits.RP23R = 44; // remap PWM4L output to RP23 (CSBUS_OUT)
+//    RPOR11bits.RP23R = 44; // remap PWM4L output to RP23 (CSBUS_OUT)
 
     __builtin_write_OSCCONL(OSCCON | (1 << 6)); // Lock Registers
 
@@ -174,7 +180,22 @@ Function: 	init_PWM
 Description:	initialize PWM Modules
  ***************************************************************************/
 void init_PWM() {
+    // PWM4 Configuration 
+    IOCON4bits.PENH = 0; // PWM4H (CSBUS_OUT) is controlled by PWM module
+    IOCON4bits.PENL = 1; // PWM4L (FAN_CP) is  controlled by PWM module
+    IOCON4bits.PMOD = 3; // Output Mode: 0=Complementary, 1=Redundant, 2=Push-Pull, 3=Independent
+    PWMCON4bits.DTC = 2; // Dead Time Control: 0=positive, 1=negative, 2=disabled
+    PWMCON4bits.ITB = 1; // SPHASE Register provides Time Base period for PWM4L
+    PHASE4 = 33300; // FAN_OUT frequency is 50 kHz
+    SPHASE4 = FAN_CP_PER; // ORING_CP frequency is 200 kHz
+    PDC4 = 6000; // 0% Duty Cycle
+    SDC4 = PHASE_FAN_CP; // 50% Duty Cycle
 
+    // PWM enable:
+    PTCONbits.PTEN = 1; // Enable the PWM Module
+    
+    
+#if 0    
     PTCON2bits.PCLKDIV = 2; // Clock divider = 2^n (n=0,1,2,3,4,5,6) don't use 1,5 or 6, see errata
     PTPER = DCDC_PER; // PTPER = ((REFCLK/7.37MHz) * 1/(f*Prescaler*1.04 ns)
     // is the desired switching frequency and 1.04ns is PWM resolution.
@@ -246,6 +267,7 @@ void init_PWM() {
 
     // PWM enable:
     PTCONbits.PTEN = 1; // Enable the PWM Module
+#endif    
 }
 /***************************************************************************
 End of function

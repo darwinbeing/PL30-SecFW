@@ -33,7 +33,7 @@
 // TERMS.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "p33FJ16GS504.h"
+#include <p33Fxxxx.h>
 
 
 // GENERAL SETTINGS
@@ -112,8 +112,8 @@ void init_Serial(void) {
     // configure ports
     __builtin_write_OSCCONL(OSCCON & ~(1 << 6)); // Unlock Registers (Bit 6 in OSCCON)
     // configure UART IO pins
-    RPINR18bits.U1RXR = 16; // U1RX->RP16
-    RPOR14bits.RP29R = 3; // U1TX->RP29
+//    RPINR18bits.U1RXR = 16; // U1RX->RP16
+//    RPOR14bits.RP29R = 3; // U1TX->RP29
 #if(SYNC_PRIMARY==1)
     FIXME!!
             // set sync output from primary pwm (PWM out)

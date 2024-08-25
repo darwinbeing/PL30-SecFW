@@ -79,6 +79,10 @@ Defines
 #define ORING_CP_PER 1175u
 #define PHASE_ORING_CP 587
 
+// use 200 kHz for FAN PWM
+#define FAN_CP_PER 19000u
+#define PHASE_FAN_CP 1300
+
 // Fault declaration
 // 1) implemented:
 #define	FAULT_PFC_NOT_READY	1	//

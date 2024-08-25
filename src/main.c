@@ -32,8 +32,8 @@
 // MICROCHIP PROVIDES THIS SOFTWARE CONDITIONALLY UPON YOUR ACCEPTANCE OF THESE
 // TERMS.
 ////////////////////////////////////////////////////////////////////////////////
-
-#include "p33FJ16GS504.h"
+#include <p33Fxxxx.h>
+#include <xc.h>
 #include "i2c.h"
 #include "serial.h"
 #include "control_dcdc.h"
@@ -43,17 +43,54 @@
 /***************************************************************************
 Configuration Bit Settings
  ***************************************************************************/
-_FOSCSEL(FNOSC_FRCPLL & IESO_ON)
-_FOSC(POSCMD_NONE & FCKSM_CSECMD & OSCIOFNC_ON & IOL1WAY_OFF)
-_FWDT(FWDTEN_OFF)
-_FPOR(FPWRT_PWR128)
-#ifndef __DEBUG
-_FICD(ICS_NONE & JTAGEN_OFF)
-#warning RELEASE MODE SELECTED
-#else
-_FICD(ICS_PGD3 & JTAGEN_OFF)
-#warning DEBUG MODE SELECTED
-#endif
+//_FOSCSEL(FNOSC_FRCPLL & IESO_ON)
+////_FOSC(POSCMD_NONE & FCKSM_CSECMD & OSCIOFNC_ON & IOL1WAY_OFF)
+//_FWDT(FWDTEN_OFF)
+//_FPOR(FPWRT_PWR128)
+//#ifndef __DEBUG
+//_FICD(ICS_NONE & JTAGEN_OFF)
+//#warning RELEASE MODE SELECTED
+//#else
+//_FICD(ICS_PGD3 & JTAGEN_OFF)
+//#warning DEBUG MODE SELECTED
+//#endif
+
+// 'C' source line config statements
+
+// FBS
+#pragma config BWRP = WRPROTECT_OFF     // Boot Segment Write Protect (Boot Segment may be written)
+#pragma config BSS = NO_FLASH           // Boot Segment Program Flash Code Protection (No Boot program Flash segment)
+
+// FGS
+#pragma config GWRP = OFF               // General Code Segment Write Protect (User program memory is not write-protected)
+#pragma config GSS = OFF                // General Segment Code Protection (User program memory is not code-protected)
+
+// FOSCSEL
+#pragma config FNOSC = FRC              // Oscillator Mode (Internal Fast RC (FRC))
+#pragma config IESO = OFF               // Internal External Switch Over Mode (Start-up device with user-selected oscillator source)
+
+// FOSC
+#pragma config POSCMD = HS              // Primary Oscillator Source (HS Oscillator Mode)
+#pragma config OSCIOFNC = OFF           // OSC2 Pin Function (OSC2 pin has clock out function)
+//#pragma config IOL1WAY = OFF            // Peripheral Pin Select Configuration (Allow Multiple Re-configurations)
+#pragma config FCKSM = CSECME           // Clock Switching and Monitor (Both Clock Switching and Fail-Safe Clock Monitor are enabled)
+
+// FWDT
+#pragma config WDTPOST = PS32768        // Watchdog Timer Postscaler (1:32,768)
+#pragma config WDTPRE = PR128           // WDT Prescaler (1:128)
+#pragma config WINDIS = OFF             // Watchdog Timer Window (Watchdog Timer in Non-Window mode)
+#pragma config FWDTEN = OFF             // Watchdog Timer Enable (Watchdog timer enabled/disabled by user software)
+
+// FPOR
+#pragma config FPWRT = PWR128           // POR Timer Value (128ms)
+//#pragma config ALTI2C = OFF             // Alternate I2C  pins (I2C mapped to SDA1/SCL1 pins)
+//#pragma config LPOL = ON                // Motor Control PWM Low Side Polarity bit (PWM module low side output pins have active-high output polarity)
+//#pragma config HPOL = ON                // Motor Control PWM High Side Polarity bit (PWM module high side output pins have active-high output polarity)
+//#pragma config PWMPIN = OFF              // Motor Control PWM Module Pin Mode bit (PWM module pins controlled by PORT register at device Reset)
+
+// FICD
+#pragma config ICS = PGD2               // Comm Channel Select (Communicate on PGC1/EMUC1 and PGD1/EMUD1)
+#pragma config JTAGEN = OFF             // JTAG Port Enable (JTAG is Disabled)
 
 /***************************************************************************
 Global variables
@@ -73,7 +110,7 @@ int duty = DUTY_DEFAULT; // 40 %
 int i_prim = 0; // primary current
 //
 int t_sync_on = T_SYNC_ON; // 30 ns
-int t_sync_off = T_SYNC_OFF; // 200 
+int t_sync_off = T_SYNC_OFF; // 200
 int t_adc = T_ADC; // 260 ns
 
 // voltage controller
@@ -109,14 +146,14 @@ int maxTempReading = 0;
 // enabling SyncFET driver channel
 int SyncRecState = 0;
 //...filtering primary current
-tFIL1HISTORY Fil_iprim_history __attribute__((section(".xbss, bss, xmemory"))) = {
+tFIL1HISTORY Fil_iprim_history  = {
     {0},
     {0}};
 tFIL1COEFF Fil_iprim_coeff __attribute__((section(".ybss, bss, ymemory"))) = {
     {0, 0},
     {0, 0}};
 //...filtering output current
-tFIL1HISTORY Fil_iout_history __attribute__((section(".xbss, bss, xmemory"))) = {
+tFIL1HISTORY Fil_iout_history  = {
     {0},
     {0}};
 tFIL1COEFF Fil_iout_coeff __attribute__((section(".ybss, bss, ymemory"))) = {
@@ -497,6 +534,14 @@ Function: 	main
 Description:	main routine of the programm
  ***************************************************************************/
 int main(void) {
+
+    // Call Init Fcts
+    init_CLOCK();
+    init_PWM();
+
+    while(1) {}
+
+#if 0
     int i;
 
     // init PI_CURR
@@ -665,9 +710,8 @@ int main(void) {
         }
 
     }
-
+#endif
 }
 /***************************************************************************
 End of function
  ***************************************************************************/
-
