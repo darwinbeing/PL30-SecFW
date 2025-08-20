@@ -7,15 +7,18 @@
             <file>file:/Users/litao/Developer/Secondary-dsPIC33FJ64GS606/h/serial.h</file>
             <file>file:/Users/litao/Developer/Secondary-dsPIC33FJ64GS606/src/init.c</file>
             <file>file:/Users/litao/Developer/Secondary-dsPIC33FJ64GS606/src/serial.c</file>
+            <file>file:/Users/litao/Developer/Secondary-dsPIC33FJ64GS606/h/i2c.h</file>
+            <file>file:/Users/litao/Developer/Secondary-dsPIC33FJ64GS606/ezbl_uart_dual_partition.c</file>
+            <file>file:/Users/litao/Developer/Secondary-dsPIC33FJ64GS606/h/control_dcdc.h</file>
+            <file>file:/Users/litao/Developer/Secondary-dsPIC33FJ64GS606/src/i2c.c</file>
             <file>file:/Users/litao/Developer/Secondary-dsPIC33FJ64GS606/Interleaved%20Forward%20Conv.X/Makefile</file>
             <file>file:/Users/litao/Developer/Secondary-dsPIC33FJ64GS606/h/dsp.h</file>
-            <file>file:/Users/litao/Developer/Secondary-dsPIC33FJ64GS606/h/i2c.h</file>
-            <file>file:/Users/litao/Developer/Secondary-dsPIC33FJ64GS606/h/control_dcdc.h</file>
             <file>file:/Users/litao/Developer/Secondary-dsPIC33FJ64GS606/h/main.h</file>
+            <file>file:/Users/litao/Developer/Secondary-dsPIC33FJ64GS606/ezbl_integration/ezbl_dual_partition.mk</file>
             <file>file:/Users/litao/Developer/Secondary-dsPIC33FJ64GS606/src/control_dcdc.s</file>
             <file>file:/Users/litao/Developer/Secondary-dsPIC33FJ64GS606/h/init.h</file>
             <file>file:/Users/litao/Developer/Secondary-dsPIC33FJ64GS606/src/main.c</file>
-            <file>file:/Users/litao/Developer/Secondary-dsPIC33FJ64GS606/src/i2c.c</file>
+            <file>file:/Users/litao/Developer/Secondary-dsPIC33FJ64GS606/h/Define.h</file>
         </group>
     </open-files>
 </project-private>

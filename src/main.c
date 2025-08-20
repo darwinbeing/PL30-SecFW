@@ -40,6 +40,9 @@
 #include "init.h"
 #include "main.h"
 
+#define FCY 40000000UL
+#include <libpic30.h>
+
 /***************************************************************************
 Configuration Bit Settings
  ***************************************************************************/
@@ -62,35 +65,43 @@ Configuration Bit Settings
 #pragma config BSS = NO_FLASH           // Boot Segment Program Flash Code Protection (No Boot program Flash segment)
 
 // FGS
-#pragma config GWRP = OFF               // General Code Segment Write Protect (User program memory is not write-protected)
-#pragma config GSS = OFF                // General Segment Code Protection (User program memory is not code-protected)
+#pragma config GWRP = OFF               // General Segment Write Protect (General Segment may be written)
+#pragma config GSS = OFF                // General Segment Code Protection (Code protect is disabled)
 
 // FOSCSEL
-#pragma config FNOSC = FRC              // Oscillator Mode (Internal Fast RC (FRC))
-#pragma config IESO = OFF               // Internal External Switch Over Mode (Start-up device with user-selected oscillator source)
+#pragma config FNOSC = FRC              // Oscillator Source Selection (Internal Fast RC (FRC))
+#pragma config IESO = ON                // Internal External Switch Over Mode (Start up device with FRC, then switch to selected oscillator)
 
 // FOSC
-#pragma config POSCMD = HS              // Primary Oscillator Source (HS Oscillator Mode)
-#pragma config OSCIOFNC = OFF           // OSC2 Pin Function (OSC2 pin has clock out function)
-//#pragma config IOL1WAY = OFF            // Peripheral Pin Select Configuration (Allow Multiple Re-configurations)
-#pragma config FCKSM = CSECME           // Clock Switching and Monitor (Both Clock Switching and Fail-Safe Clock Monitor are enabled)
+#pragma config POSCMD = NONE            // Primary Oscillator Source (Primary Oscillator disabled)
+#pragma config OSCIOFNC = ON            // OSC2 Pin Function (OSC2 is general purpose digital I/O pin)
+//#pragma config OSCIOFNC = OFF           // OSC2 Pin Function bit (OSC2 is clock output)
+#pragma config FCKSM = CSECMD           // Clock Switching Mode (Clock switching enabled, Fail-safe Clock Monitor disabled)
 
 // FWDT
 #pragma config WDTPOST = PS32768        // Watchdog Timer Postscaler (1:32,768)
-#pragma config WDTPRE = PR128           // WDT Prescaler (1:128)
+#pragma config WDTPRE = PR128           // Watchdog Timer Prescaler (1:128)
 #pragma config WINDIS = OFF             // Watchdog Timer Window (Watchdog Timer in Non-Window mode)
-#pragma config FWDTEN = OFF             // Watchdog Timer Enable (Watchdog timer enabled/disabled by user software)
+#pragma config FWDTEN = OFF             // Watchdog Timer Enable (WDT controlled by user software)
 
 // FPOR
 #pragma config FPWRT = PWR128           // POR Timer Value (128ms)
-//#pragma config ALTI2C = OFF             // Alternate I2C  pins (I2C mapped to SDA1/SCL1 pins)
-//#pragma config LPOL = ON                // Motor Control PWM Low Side Polarity bit (PWM module low side output pins have active-high output polarity)
-//#pragma config HPOL = ON                // Motor Control PWM High Side Polarity bit (PWM module high side output pins have active-high output polarity)
-//#pragma config PWMPIN = OFF              // Motor Control PWM Module Pin Mode bit (PWM module pins controlled by PORT register at device Reset)
+#pragma config ALTSS1 = ON              // Alternate SS1 pin (SS1A is selected as the I/O pin for SPI1)
+#pragma config ALTQIO = OFF             // Alternate QEI1 pin (QEA1, QEB1, INDX1 selected as QEI1 inputs)
 
 // FICD
-#pragma config ICS = PGD2               // Comm Channel Select (Communicate on PGC1/EMUC1 and PGD1/EMUD1)
-#pragma config JTAGEN = OFF             // JTAG Port Enable (JTAG is Disabled)
+#pragma config ICS = PGD2               // ICD Communication Channel Select bits (Communicate on PGC2/EMUC2 and PGD2/EMUD2)
+#pragma config JTAGEN = OFF             // JTAG Port Enable (JTAG is disabled)
+
+// FCMP
+#pragma config HYST0 = HYST45           // Comparator Hysteresis 0 (45 mV)
+#pragma config CMPPOL0 = POL_FALL       // Comparator Polarity 0 (Hysteresis on falling edge)
+#pragma config HYST1 = HYST45           // Comparator Hysteresis 1 (45 mV)
+#pragma config CMPPOL1 = POL_FALL       // Comparator Polarity 1 (Hysteresis on falling edge)
+
+
+// Bootloader prototypes
+void EZBL_BootloaderInit(void);
 
 /***************************************************************************
 Global variables
@@ -529,15 +540,85 @@ void serve_SyncRec(void) {
 End of function
  ***************************************************************************/
 
+void send_cmd1(uint8_t cmd)
+{
+    uart1_send_byte(0x05);
+}
+
+uint8_t cmd_data1=0;
+uint8_t cmd_data2=0;
+void send_cmd2(uint8_t cmd, uint16_t data)
+{
+    uart1_send_byte(0x50);
+    cmd_data1=cmd;
+    cmd_data2=data;
+
+}
+
+static int process_step = 0;
+
+void process_cmd()
+{
+    switch (process_step) {
+        case 0:
+        case 1:
+        case 2:
+        case 3:
+        case 4:
+            send_cmd1(process_step * 2);
+            process_step++;
+            break;
+
+        case 5:
+            send_cmd1(0x1e);
+            process_step++;
+            break;
+
+        case 6:
+            send_cmd1(0x22);
+            process_step++;
+            break;
+
+        case 7:
+            send_cmd2(0x28, 0);
+            process_step++;
+            break;
+
+        case 8:
+            send_cmd2(0x2c, 0);
+            process_step = 0;  
+            break;
+
+        default:
+            process_step = 0;
+            break;
+    }    
+}
 /***************************************************************************
 Function: 	main
 Description:	main routine of the programm
  ***************************************************************************/
 int main(void) {
 
+    //EZBL_BootloaderInit();
     // Call Init Fcts
     init_CLOCK();
+    init_PORTS();
+    // init_TIMER1();
+    // init_TIMER2();
+    // init_INT();
     init_PWM();
+    init_Serial();
+    // init_PWM3();
+    // init_PWM1();
+    // PWM enable:
+    // PTCONbits.PTEN = 1; // Enable the PWM Module
+    
+        while (1)
+    {
+        uart1_send_byte(0x50);
+        __delay_ms(5);
+    }
 
     while(1) {}
 

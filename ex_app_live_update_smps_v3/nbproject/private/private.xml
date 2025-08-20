@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/Users/litao/Developer/HPServerPSUHack/references/ex_app_live_update_smps_v3/src/lcd.c</file>
+            <file>file:/Users/litao/Developer/HPServerPSUHack/references/ex_app_live_update_smps_v3/ezbl_uart_dual_partition.c</file>
+            <file>file:/Users/litao/Developer/HPServerPSUHack/references/ex_app_live_update_smps_v3/main.c</file>
+            <file>file:/Users/litao/Developer/HPServerPSUHack/references/ex_app_live_update_smps_v3/i2c.c</file>
+            <file>file:/Users/litao/Developer/HPServerPSUHack/references/ex_app_live_update_smps_v3/src/smps_3p3z_dspic.s</file>
+            <file>file:/Users/litao/Developer/HPServerPSUHack/references/ex_app_live_update_smps_v3/src/init_Alt_W_Registers.S</file>
+            <file>file:/Users/litao/Developer/HPServerPSUHack/references/ex_app_live_update_smps_v3/src/init.c</file>
+            <file>file:/Users/litao/Developer/HPServerPSUHack/references/ex_app_live_update_smps_v3/src/isr.c</file>
+        </group>
+    </open-files>
+</project-private>

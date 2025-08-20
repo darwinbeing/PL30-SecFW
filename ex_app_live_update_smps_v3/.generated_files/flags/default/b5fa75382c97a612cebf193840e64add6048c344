@@ -1,0 +1,1 @@
+ -c -mcpu=$(MP_PROCESSOR_OPTION)  -omf=elf -DXPRJ_default=$(CND_CONF)    --partition 1 -Wa,-g,--no-relax$(MP_EXTRA_AS_POST)  -mdfp="${DFP_DIR}/xc16"/Users/litao/Developer/HPServerPSUHack/references/ex_app_live_update_smps_v3/src/smps_3p3z_dspic.s

@@ -42,8 +42,8 @@ Defines
  ***************************************************************************/
 
 // set T2 to 4800 Hz
-#define T2_PER 8333u
-#define T1_PER 31000 
+#define T2_PER 8001u
+#define T1_PER 40000 
 
 // set current limits
 #define CURR_MAX 802 // 750 // 10.15 * 74A 
@@ -54,7 +54,7 @@ Defines
 #define OUTPUT_DERATE_PARA 1293 // para:=1.0 A/V, u_scale_pri=2.01/V, i_scale_sec=10.15/A  => para = 1.0 *(10.15/2.01) *256 = 1293
 
 //Switching Period Defaults
-#define DCDC_PER 2938 //DCDC_PER=2938(80kHz); 2448(96kHz); DCDC_PER=2350(100kHz)
+#define DCDC_PER 7500 //DCDC_PER=2938(80kHz); 2448(96kHz); DCDC_PER=2350(100kHz)
 #define DUTY_DEFAULT 26230
 
 // DCDC voltage controller

@@ -22,7 +22,7 @@
 #     clean                    remove built files from a configuration
 #     clobber                  remove all built files
 #     all                      build all configurations
-#     help                     print help mesage
+#     help                     print help message
 #  
 #  Targets .build-impl, .clean-impl, .clobber-impl, .all-impl, and
 #  .help-impl are implemented in nbproject/makefile-impl.mk.
@@ -110,4 +110,4 @@ include nbproject/Makefile-variables.mk
 # include EZBL makefile for creating a Dual Partition combined Bootloader + 
 # Application, BOOTID_HASH and APPID_VER data, and doing post-build upload to a 
 # compatible Active Partition Bootloader
-# include ../ezbl_integration/ezbl_dual_partition.mk
+include ezbl_integration/ezbl_dual_partition.mk
