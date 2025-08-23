@@ -37,49 +37,49 @@
 #include <p33Fxxxx.h>
 #include "init.h"
 #include "main.h"
+#include "delay.h"
 
 /***************************************************************************
-Function: 	init_CLOCK
-Description:	Oscillator Settings
- ***************************************************************************/
-void init_CLOCK() {
+Function: 	init_CLOCKS
+Description: Initialize Main and Auxilliary Clocks
+***************************************************************************/
+
+void init_CLOCKS() {
     /* 	Configure Oscillator to operate the device at 40Mhz instruction clock
             Fosc= Fin*M/(N1*N2), Fcy=Fosc/2
             Fosc= 7.37*(43)/(2*2)=80Mhz for Fosc, Fcy = Fosc / 2 = 40Mhz  */
 
     /* Configure PLL prescaler, PLL postscaler, PLL divisor */
     PLLFBD = 41; /* M = PLLFBD + 2 */
-    CLKDIV &= 0x3f;
-    // CLKDIVbits.PLLPOST = 0; /* N1 = 2 */
-    // CLKDIVbits.PLLPRE = 0; /* N2 = 2 */
+    CLKDIVbits.PLLPOST = 0; /* N1 = 2 */
+    CLKDIVbits.PLLPRE = 0; /* N2 = 2 */
 
-	__builtin_write_OSCCONH(1); //init clock switch to internal
-	__builtin_write_OSCCONL(1); //start clock switch process   
-    
+    RCONbits.SWDTEN=0;                       /* Disable Watch Dog Timer*/
+
+    /* Clock switch to incorporate PLL*/
+    // Initiate Clock Switch to FRC oscillator with PLL (NOSC=0b001)
+    __builtin_write_OSCCONH(0x1); //init clock switch to internal
+    __builtin_write_OSCCONL(OSCCON | 0x01); //start clock switch process
+
     // Wait for Clock Switch to occur
-	while (OSCCONbits.COSC != 0b001);
-    //while (OSCCONbits.LOCK != 1); // Wait for PLL to Lock
-//    __builtin_write_OSCCONH(0x03);    // Initiate Clock Switch to Primary Oscillator (EC) with PLL (NOSC=0b011)
-//    __builtin_write_OSCCONL(0x01);    // Start clock switching
-//    
-//    while(OSCCONbits.COSC != 0b011);  // Wait for PLL to lock
-    while(OSCCONbits.LOCK != 1);
+    while (OSCCONbits.COSC != 0b001);
+    // Wait for PLL to lock
+    while (OSCCONbits.LOCK!= 1) {};
+
     /* Config ADC and PWM clock for 120MHz
        ACLK = ((REFCLK * 16) / APSTSCLR ) = (7.37 * 16) / 1 = 117.92 MHz  */
 
-    ACLKCON = 0xa740;
-    //ACLKCONbits.FRCSEL = 1; /* Reference CLK source for Aux PLL, 1=FRC, 0=source is determined by ASRCSEL  */
-    //ACLKCONbits.ASRCSEL = 0; /* Clk source for FRCSEL, 1=Primary Oscillator, 0=No Clk */
-    //ACLKCONbits.SELACLK = 1; /* Auxiliary Oscillator provides clock source for PWM & ADC */
-    //ACLKCONbits.APSTSCLR = 0b111; /* Divide Auxiliary clock by (0b111=1, 0b110=2, 0b101=4 ...) */
-    //ACLKCONbits.ENAPLL = 1; /* Enable Auxiliary PLL */
+    //ACLKCON = 0xa740;
+    ACLKCONbits.FRCSEL = 1; /* Reference CLK source for Aux PLL, 1=FRC, 0=source is determined by ASRCSEL  */
+    ACLKCONbits.ASRCSEL = 0; /* Clk source for FRCSEL, 1=Primary Oscillator, 0=No Clk */
+    ACLKCONbits.SELACLK = 1; /* Auxiliary Oscillator provides clock source for PWM & ADC */
+    ACLKCONbits.APSTSCLR = 0b111; /* Divide Auxiliary clock by (0b111=1, 0b110=2, 0b101=4 ...) */
+    ACLKCONbits.ENAPLL = 1; /* Enable Auxiliary PLL */
 
-    
-    //PTCON2bits.PCLKDIV = 0b001;
-    PTCON2 = 0x01;
-    
+    PTCON2bits.PCLKDIV = 0b001; //Divide by 2
+
     while (ACLKCONbits.APLLCK != 1); /* Wait for Auxiliary PLL to Lock */
-
+    Delay(Delay50us);
 }
 /***************************************************************************
 End of function
@@ -125,19 +125,19 @@ void init_PORTS() {
     //LATBbits.LATB12 = 0;
     //LATCbits.LATC12 = 0;
     //LATB = 0;
-//    TRISBbits.TRISB5 = 0; 
-//    TRISBbits.TRISB14 = 0; 
-//    TRISBbits.TRISB15 = 0; 
+//    TRISBbits.TRISB5 = 0;
+//    TRISBbits.TRISB14 = 0;
+//    TRISBbits.TRISB15 = 0;
     //TRISB = 0x3fdf;
-    
+
     //LATC = 0x1000;
 //    TRISCbits.TRISC12 = 0;
     //TRISC = 0xefff;
-  
+
 //   if ((_DAT_ram_0a32 & 2) != 0) {
 //    _DAT_ram_02d0 = 0x6fff;
-//  }   
-    
+//  }
+
     // PORTD
     //LATD = 0x30;
 //    TRISDbits.TRISD1 = 0;
@@ -148,21 +148,21 @@ void init_PORTS() {
 //    TRISDbits.TRISD6 = 0;
 //    TRISDbits.TRISD7 = 0;
     //TRISD = 0xff01;
-    
+
     // PORTE
     //TRISE = 0xfff0;
     //LATE = 0;
-    
+
     // PORTF
     //TRISF = 0xffbf;
     // LATF = 0;
-    
+
     // PORTG
     // TRISG = 0xfc3f;
     // LATG = 0x40;
     // TRISGbits.TRISG7=0;
     // LATGbits.LATG7=1;
-    
+
     // 1. Configure PG9 as digital I/O
     // ANSGbits.ANSG9 = 0; // Disable analog mode for PG9
 
@@ -228,178 +228,89 @@ void init_INT(void) {
     IEC3bits.PSEMIE = 1; // enable interrupt
 
 }
-
-void init_PWM3() {
-    
-    LATC |= 0x8000;
-        
-    IOCON3 |= 0x8000;
-    IOCON3 |= 0xc00;
-    
-    PWMCON3bits.DTC = 0;
-    PWMCON3 |= 0x280;
-    
-    FCLCON3 |= 0x3;
-    PHASE3|= 0x3fff;
-    PDC3 = 0;
-    
-}
-
-init_PWM1() {
-    
-    PTCON |= 0x400;      
-    PTPER = 0x1d4c;
-    MDC = 0xea6;   
-    PWMCON1 |= 0x101;
-    DTR1 = 0xfa;
-    ALTDTR1 = 0xfa;
-    
-    FCLCON1 |= 0x3;
-    
-    PWMCON2 |= 0x100;
-    DTR2 = 0x96;
-    ALTDTR2 = 0x96;
-    FCLCON2 |= 0x3;
-    
-    TRGCON2bits.DTM = 0;
-    TRIG2 = 0xd61;
-    STRIG2 = 0x1c07;
-    
-    init_PWM126();
-    
-}
-
-init_PWM126() {
-    
-    PDC6 = 0x445c;
-    IOCON6bits.PENH = 0;
-    IOCON1bits.PENH = 0;
-    IOCON1bits.PENL = 0;
-    IOCON2bits.PENH = 0;
-    IOCON2bits.PENL = 0;
-    
-    PDC4 = 0;
-    PHASE1 = 0;
-    
-    LATG |= 0x40;
-    
-    DTR1 = 0x7d;
-    ALTDTR1 = 0x7d;
-    
-    DTR2 = 0x7d;
-    ALTDTR2 = 0x7d;
-
-    TRISC = 0x1000;
-    
-}
 /***************************************************************************
 End of function
  ***************************************************************************/
 
 /***************************************************************************
 Function: 	init_PWM
-Description:	initialize PWM Modules
- ***************************************************************************/
+Description:	initialze the High Speed PWM Generators.
+ * Configure PWM1H,PWM1L,PWM2H and PWM2L for Full Bridge Drive
+ * Configure PWM3H, PWM3L for Synchronous Rectifier Drive
+ * Configure TRIG1 for sampling Valley Current
+ * Configure TRIG2 for sampling Output Voltage
+ * Configure SEVTCMP for triggering fault configuration ISR
+ * Configure TRIG3 for triggering fault configuration ISR
+***************************************************************************/
+
 void init_PWM() {
-    
-    // Configure PWM Clock
-//    PTCONbits.PTEN = 0;             // Keep PWM module off for now
-//    PTCONbits.PTSIDL = 0;
-//    PTCONbits.SESTAT = 0;
+
+    /* Configure PWM module.
+    */
+    // PTCONbits.PTEN = 0; // disable PWM module
+    // PTCONbits.PTSIDL = 0; // PWM time base runs during CPU idle
+    // PTCONbits.SEIEN = 0; // special event interrupt disabled
+    // PTCONbits.EIPU = 1; // enable immediate period update
+    // PTCONbits.SYNCOEN = 0; // SYNCO1 output is disabled
+    // PTCONbits.SYNCEN = 0; // external sync of time base is disabled
+    // CHOPbits.CHPCLKEN = 0; // disable chop clock generator
+
     PTCONbits.EIPU = 1;
-    // PTCON2bits.PCLKDIV = 0b001;
-    
-    // IOCON3 |= 0x8000;
-    // IOCON3 |= 0xc00;
-    
-    // PWMCON3bits.DTC = 0;
-    // PWMCON3 |= 0x280;
-    
-    // FCLCON3 |= 0x3;
-    // PHASE3|= 0x3fff;
-    // PDC3 = 0;
-    
-    // PTCON2bits.PCLKDIV = 2; // Clock divider = 2^n (n=0,1,2,3,4,5,6) don't use 1,5 or 6, see errata
-    PTPER = DCDC_PER; // PTPER = ((REFCLK/7.37MHz) * 1/(f*Prescaler*1.04 ns)
+    // PTCON2bits.PCLKDIV = 1; // set 1:2 divisor for master clock prescaler
+
+    PTPER = DCDC_PER;
     MDC = 3750;
-    
-    PWMCON1 |= 0x101;
-    DTR1 = 0xfa;
-    ALTDTR1 = 0xfa;
-    FCLCON1 |= 0x3;
-    
-    PWMCON2 |= 0x100;
-    DTR2 = 0x96;
-    ALTDTR2 = 0x96; 
-    FCLCON2 |= 0x3;
+    // MDC = DCDC_PER >> 1;
+
+    // PWM1 Configuration
+    PWMCON1bits.MDCS = 1;
+    PWMCON1bits.IUE = 1;
+
+    IOCON1bits.PENH = 1;
+    IOCON1bits.PENL = 1;
+    FCLCON1bits.FLTMOD = 0x3;
+    PHASE1 = 0x456;
+    // DTR1 = 0x7d;
+    // ALTDTR1 = 0x7d;
+    DTR1 = 0x2ee;
+    ALTDTR1 = 0x2ee;
+    // DTR1 = 0xfa;
+    // ALTDTR1 = 0xfa;
+
+    // PWM2 Configuration
+    PWMCON2bits.MDCS = 1;
+    IOCON2bits.PENH = 1;
+    IOCON2bits.PENL = 1;
+    FCLCON2bits.FLTMOD = 0x3;
+    // DTR2 = 0x96;
+    // ALTDTR2 = 0x96;
+    DTR2 = 0xfa;
+    ALTDTR2 = 0xfa;
     TRGCON2 &= 0xff7f;
     TRIG2 = 0xd61;
     STRIG2 = 0x1c07;
-    
-    PDC6 = 0x445c;
-    
-    IOCON6 &= 0x7fff;
-    IOCON1 &= 0x3fff;
-    IOCON2 &= 0x3fff;
-    PDC4 = 0;
-    PHASE1 = 0x456;
-    
-    DTR1 = 0x7d;
-    ALTDTR1 = 0x7d;
-    DTR2 = 0x7d;
-    ALTDTR2 = 0x7d; 
 
-    DTR1 = 0x2ee;
-    ALTDTR1 = 0x2ee;
-    
-    IOCON1 |= 0xc000;
-    IOCON2 |= 0xc000;
-    IOCON6 |= 0x8000;
-    
-    IOCON4 |= 0x8000;
-    PHASE4 = 0x8214;
-    PDC4 = 0;
-    IOCON6 |= 0x8c00;
-    PWMCON6 &= 0xff3f;
-    PWMCON6 |= 0x280;
-    PHASE6 = 0x3fff;
-    PDC6 = 0x445c;
-
-    PDC4 = 0x61f7;
-    
-//    IOCON4 |= 0x4c00;
-//    PWMCON4 &= 0xff3f;
-//    PWMCON4 |= 0x280;   
-//    SPHASE4 = 19000;
-//    SDC4 = 0x514;
-            
-            
-    IOCON3 &= 0x7fff;
-    IOCON3 |= 0x8c00;
-    
-    PWMCON3 &= 0xff3f;
-    PWMCON3 |= 0x280;
-    FCLCON3 |= 0x3;
-    
+    // PWM3 Configuration
+    PWMCON3bits.ITB = 1;
+    PWMCON3bits.DTC = 0b10;
+    IOCON3bits.PENH = 1;
+    IOCON3bits.PENL = 0;
+    IOCON3bits.PMOD = 3; // Output Mode: 0=Complementary, 1=Redundant, 2=Push-Pull, 3=Independent
+    FCLCON3bits.FLTMOD = 0x3;
+    //PDC3 = 0x2fff;
+    PDC3 = 0x2f37;
     PHASE3 = 0x3fff;
-    //PDC3 = 0x2fff; 
-    PDC3 = 0x2f37; 
-    
-    // PWM4 Configuration 
-    //IOCON4bits.PENH = 0; // PWM4H (CSBUS_OUT) is controlled by PWM module
-    //IOCON4bits.PENL = 1; // PWM4L (FAN_CP) is  controlled by PWM module
-    //IOCON4bits.PMOD = 3; // Output Mode: 0=Complementary, 1=Redundant, 2=Push-Pull, 3=Independent
-    //PWMCON4bits.DTC = 2; // Dead Time Control: 0=positive, 1=negative, 2=disabled
-    //PWMCON4bits.ITB = 1; // SPHASE Register provides Time Base period for PWM4L
-    IOCON4 &= 0x7fff;
-    IOCON4 |= 0x4c00;
-    
-    PWMCON4 &= 0xff3f;
-    PWMCON4 |= 0x280;
-    
+
+    // PWM4 Configuration
+    PWMCON4bits.ITB = 1;
+    PWMCON4bits.DTC = 0b10;
+    IOCON4bits.PENH = 1;
+    IOCON4bits.PENL = 1;
+    IOCON4bits.PMOD = 0x3; // Output Mode: 0=Complementary, 1=Redundant, 2=Push-Pull, 3=Independent
+    PDC4 = 0x61f7;
     //PHASE4 = 33300; // FAN_OUT frequency is 29 kHz
     PHASE4 = 0x8116; // FAN_OUT frequency is 29 kHz
-   
+
     //refclk_mhz=7.37
     //m1=16
     //n=1
@@ -409,23 +320,22 @@ void init_PWM() {
     //desired_pwm_period_sec = 1 / (pwm_freq_khz * 1000)  # seconds
     //aclk = (refclk_mhz * m1) / n                        # MHz
     //phase_value = ((aclk * 1e6 * 8 * desired_pwm_period_sec) / pclkdiv) - 8 = 18859
-
-    SPHASE4 = FAN_CP_PER; // ORING_CP frequency is 25 kHz
-    //PDC4 = 6000; // 0% Duty Cycle
     //SDC4 = PHASE_FAN_CP; // 7% Duty Cycle
-    SDC4 = 0x7ba;
+    SDC4 = 0x89b;
+    SPHASE4 = FAN_CP_PER; // ORING_CP frequency is 25 kHz
 
+    // PWM6 Configuration
+    PWMCON6bits.ITB = 1;
+    PWMCON6bits.DTC = 0b10;
+    IOCON6bits.PENH = 1;
+    IOCON6bits.PENL = 0;
+    IOCON6bits.PMOD = 3; // Output Mode: 0=Complementary, 1=Redundant, 2=Push-Pull, 3=Independent
+    PDC6 = 0x445c;
+    PHASE6 = 0x3fff;
 
-    //IC1CON = 0x83;
-    //IFS0 &= 0xfffd;
-    //IEC0 |= 2;
-    //IPC0 &= 0x8f;
-    //IPC0 |= 0x50;
-    
     // PWM enable:
     PTCONbits.PTEN = 1; // Enable the PWM Module
-    
-#if 0    
+#if 0
     PTCON2bits.PCLKDIV = 2; // Clock divider = 2^n (n=0,1,2,3,4,5,6) don't use 1,5 or 6, see errata
     PTPER = DCDC_PER; // PTPER = ((REFCLK/7.37MHz) * 1/(f*Prescaler*1.04 ns)
     // is the desired switching frequency and 1.04ns is PWM resolution.
@@ -481,7 +391,7 @@ void init_PWM() {
     SDC3 = 0; // 200 kHz
     FCLCON3 = 0x0003; // FLTMOD=3(disabled)
 
-    // PWM4 Configuration 
+    // PWM4 Configuration
     IOCON4bits.PENH = 1; // PWM4H (CSBUS_OUT) is controlled by PWM module
     IOCON4bits.PENL = 1; // PWM4L (ORING_CP) is  controlled by PWM module
     IOCON4bits.PMOD = 3; // Output Mode: 0=Complementary, 1=Redundant, 2=Push-Pull, 3=Independent
@@ -497,7 +407,7 @@ void init_PWM() {
 
     // PWM enable:
     PTCONbits.PTEN = 1; // Enable the PWM Module
-#endif    
+#endif
 }
 /***************************************************************************
 End of function
@@ -544,7 +454,7 @@ End of function
 
 /***************************************************************************
 Function: 	init_DAC
-Description:	initialize the Comparators for OverCurrent and 
+Description:	initialize the Comparators for OverCurrent and
                                 Overvoltage Protection
  ***************************************************************************/
 void init_DAC() {

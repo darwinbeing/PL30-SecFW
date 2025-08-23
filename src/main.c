@@ -602,15 +602,13 @@ int main(void) {
 
     //EZBL_BootloaderInit();
     // Call Init Fcts
-    init_CLOCK();
+    init_CLOCKS();
     init_PORTS();
     // init_TIMER1();
     // init_TIMER2();
     // init_INT();
     init_PWM();
     init_Serial();
-    // init_PWM3();
-    // init_PWM1();
     // PWM enable:
     // PTCONbits.PTEN = 1; // Enable the PWM Module
     
