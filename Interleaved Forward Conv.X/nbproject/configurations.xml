@@ -33,6 +33,7 @@
       <itemPath>../src/control_dcdc.s</itemPath>
       <itemPath>../ezbl_uart_dual_partition.c</itemPath>
       <itemPath>../src/asm/delay.s</itemPath>
+      <itemPath>../src/adc.c</itemPath>
     </logicalFolder>
   </logicalFolder>
   <sourceRootList>

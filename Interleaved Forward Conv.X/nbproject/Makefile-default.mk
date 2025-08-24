@@ -51,17 +51,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=../src/i2c.c ../src/init.c ../src/main.c ../src/serial.c ../src/control_dcdc.s ../ezbl_uart_dual_partition.c ../src/asm/delay.s
+SOURCEFILES_QUOTED_IF_SPACED=../src/i2c.c ../src/init.c ../src/main.c ../src/serial.c ../src/control_dcdc.s ../ezbl_uart_dual_partition.c ../src/asm/delay.s ../src/adc.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/_ext/1360937237/i2c.o ${OBJECTDIR}/_ext/1360937237/init.o ${OBJECTDIR}/_ext/1360937237/main.o ${OBJECTDIR}/_ext/1360937237/serial.o ${OBJECTDIR}/_ext/1360937237/control_dcdc.o ${OBJECTDIR}/_ext/1472/ezbl_uart_dual_partition.o ${OBJECTDIR}/_ext/659850881/delay.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/_ext/1360937237/i2c.o.d ${OBJECTDIR}/_ext/1360937237/init.o.d ${OBJECTDIR}/_ext/1360937237/main.o.d ${OBJECTDIR}/_ext/1360937237/serial.o.d ${OBJECTDIR}/_ext/1360937237/control_dcdc.o.d ${OBJECTDIR}/_ext/1472/ezbl_uart_dual_partition.o.d ${OBJECTDIR}/_ext/659850881/delay.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/_ext/1360937237/i2c.o ${OBJECTDIR}/_ext/1360937237/init.o ${OBJECTDIR}/_ext/1360937237/main.o ${OBJECTDIR}/_ext/1360937237/serial.o ${OBJECTDIR}/_ext/1360937237/control_dcdc.o ${OBJECTDIR}/_ext/1472/ezbl_uart_dual_partition.o ${OBJECTDIR}/_ext/659850881/delay.o ${OBJECTDIR}/_ext/1360937237/adc.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/_ext/1360937237/i2c.o.d ${OBJECTDIR}/_ext/1360937237/init.o.d ${OBJECTDIR}/_ext/1360937237/main.o.d ${OBJECTDIR}/_ext/1360937237/serial.o.d ${OBJECTDIR}/_ext/1360937237/control_dcdc.o.d ${OBJECTDIR}/_ext/1472/ezbl_uart_dual_partition.o.d ${OBJECTDIR}/_ext/659850881/delay.o.d ${OBJECTDIR}/_ext/1360937237/adc.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/_ext/1360937237/i2c.o ${OBJECTDIR}/_ext/1360937237/init.o ${OBJECTDIR}/_ext/1360937237/main.o ${OBJECTDIR}/_ext/1360937237/serial.o ${OBJECTDIR}/_ext/1360937237/control_dcdc.o ${OBJECTDIR}/_ext/1472/ezbl_uart_dual_partition.o ${OBJECTDIR}/_ext/659850881/delay.o
+OBJECTFILES=${OBJECTDIR}/_ext/1360937237/i2c.o ${OBJECTDIR}/_ext/1360937237/init.o ${OBJECTDIR}/_ext/1360937237/main.o ${OBJECTDIR}/_ext/1360937237/serial.o ${OBJECTDIR}/_ext/1360937237/control_dcdc.o ${OBJECTDIR}/_ext/1472/ezbl_uart_dual_partition.o ${OBJECTDIR}/_ext/659850881/delay.o ${OBJECTDIR}/_ext/1360937237/adc.o
 
 # Source Files
-SOURCEFILES=../src/i2c.c ../src/init.c ../src/main.c ../src/serial.c ../src/control_dcdc.s ../ezbl_uart_dual_partition.c ../src/asm/delay.s
+SOURCEFILES=../src/i2c.c ../src/init.c ../src/main.c ../src/serial.c ../src/control_dcdc.s ../ezbl_uart_dual_partition.c ../src/asm/delay.s ../src/adc.c
 
 
 
@@ -119,6 +119,12 @@ ${OBJECTDIR}/_ext/1472/ezbl_uart_dual_partition.o: ../ezbl_uart_dual_partition.c
 	@${RM} ${OBJECTDIR}/_ext/1472/ezbl_uart_dual_partition.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  ../ezbl_uart_dual_partition.c  -o ${OBJECTDIR}/_ext/1472/ezbl_uart_dual_partition.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/_ext/1472/ezbl_uart_dual_partition.o.d"      -g -D__DEBUG     -omf=elf -DXPRJ_default=$(CND_CONF)    $(COMPARISON_BUILD)  -msmall-data -O2 -I"../h" -I".." -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
+${OBJECTDIR}/_ext/1360937237/adc.o: ../src/adc.c  .generated_files/flags/default/c61e626f9fdebd0179311d80449f2861180fefba .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
+	@${MKDIR} "${OBJECTDIR}/_ext/1360937237" 
+	@${RM} ${OBJECTDIR}/_ext/1360937237/adc.o.d 
+	@${RM} ${OBJECTDIR}/_ext/1360937237/adc.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  ../src/adc.c  -o ${OBJECTDIR}/_ext/1360937237/adc.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/_ext/1360937237/adc.o.d"      -g -D__DEBUG     -omf=elf -DXPRJ_default=$(CND_CONF)    $(COMPARISON_BUILD)  -msmall-data -O2 -I"../h" -I".." -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
+	
 else
 ${OBJECTDIR}/_ext/1360937237/i2c.o: ../src/i2c.c  .generated_files/flags/default/226ca89b6b4bc662a16a6ce4ef34897a89aa46d5 .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
 	@${MKDIR} "${OBJECTDIR}/_ext/1360937237" 
@@ -149,6 +155,12 @@ ${OBJECTDIR}/_ext/1472/ezbl_uart_dual_partition.o: ../ezbl_uart_dual_partition.c
 	@${RM} ${OBJECTDIR}/_ext/1472/ezbl_uart_dual_partition.o.d 
 	@${RM} ${OBJECTDIR}/_ext/1472/ezbl_uart_dual_partition.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  ../ezbl_uart_dual_partition.c  -o ${OBJECTDIR}/_ext/1472/ezbl_uart_dual_partition.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/_ext/1472/ezbl_uart_dual_partition.o.d"        -g -omf=elf -DXPRJ_default=$(CND_CONF)    $(COMPARISON_BUILD)  -msmall-data -O2 -I"../h" -I".." -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
+	
+${OBJECTDIR}/_ext/1360937237/adc.o: ../src/adc.c  .generated_files/flags/default/a68d25783b45def03eec6731be256080bbf7f398 .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
+	@${MKDIR} "${OBJECTDIR}/_ext/1360937237" 
+	@${RM} ${OBJECTDIR}/_ext/1360937237/adc.o.d 
+	@${RM} ${OBJECTDIR}/_ext/1360937237/adc.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  ../src/adc.c  -o ${OBJECTDIR}/_ext/1360937237/adc.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/_ext/1360937237/adc.o.d"        -g -omf=elf -DXPRJ_default=$(CND_CONF)    $(COMPARISON_BUILD)  -msmall-data -O2 -I"../h" -I".." -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
 endif
 

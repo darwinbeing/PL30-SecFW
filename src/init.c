@@ -90,7 +90,7 @@ Function: 	init_PORTS
 Description:	Input Output Pins Settings
  ***************************************************************************/
 void init_PORTS() {
-    __builtin_write_OSCCONL(OSCCON & ~(1 << 6)); // Unlock Registers (Bit 6 in OSCCON)
+    //__builtin_write_OSCCONL(OSCCON & ~(1 << 6)); // Unlock Registers (Bit 6 in OSCCON)
 
     //ODCCbits.ODCC13 = 1;		// configure RP29/RC13 (TxD) as open drain
 //    RPINR18bits.U1RXR = 16; // U1RX->RP16
@@ -308,6 +308,7 @@ void init_PWM() {
     IOCON4bits.PENL = 1;
     IOCON4bits.PMOD = 0x3; // Output Mode: 0=Complementary, 1=Redundant, 2=Push-Pull, 3=Independent
     PDC4 = 0x61f7;
+    //PDC4 = 0x6800;
     //PHASE4 = 33300; // FAN_OUT frequency is 29 kHz
     PHASE4 = 0x8116; // FAN_OUT frequency is 29 kHz
 
@@ -334,7 +335,7 @@ void init_PWM() {
     PHASE6 = 0x3fff;
 
     // PWM enable:
-    PTCONbits.PTEN = 1; // Enable the PWM Module
+    //PTCONbits.PTEN = 1; // Enable the PWM Module
 #if 0
     PTCON2bits.PCLKDIV = 2; // Clock divider = 2^n (n=0,1,2,3,4,5,6) don't use 1,5 or 6, see errata
     PTPER = DCDC_PER; // PTPER = ((REFCLK/7.37MHz) * 1/(f*Prescaler*1.04 ns)
@@ -420,32 +421,34 @@ Description:	initialze the AD-Converter
 void init_ADC() {
     ADCONbits.FORM = 0; // Output in Integer Format
     ADCONbits.SLOWCLK = 1; // if 1, use auxiliary clock source (ACLK = 120 MHz)
-    ADCONbits.ADCS = 4; // Clock divider selection (ADCLK = 1/(n+1)*ACLK = 24 MHz)
-    ADCONbits.EIE = 1; // Early interrupt enabled
-    ADCONbits.ASYNCSAMP = 1; // Asynchronous sampling
+    ADCONbits.ADCS = 5; // Clock divider selection (ADCLK = 1/(n+1)*ACLK = 24 MHz)
+
 
     ADPCFGbits.PCFG0 = 0; // AN0 is configured as analog input
     ADPCFGbits.PCFG1 = 0; // AN1 is configured as analog input
     ADPCFGbits.PCFG2 = 0; // AN2 is configured as analog input
     ADPCFGbits.PCFG3 = 0; // AN3 is configured as analog input
-    ADPCFGbits.PCFG4 = 0; // AN4 is configured as analog input
-    ADPCFGbits.PCFG5 = 0; // AN5 is configured as analog input
-    ADPCFGbits.PCFG9 = 0; // AN9 is configured as analog input
-    ADPCFGbits.PCFG10 = 0; // AN10 is configured as analog input
-    ADPCFGbits.PCFG11 = 0; // AN11 is configured as analog input
 
+    
     ADSTATbits.P0RDY = 0; // Clear Pair 0 (AN0+1) data ready bit
     ADSTATbits.P1RDY = 0; // Clear Pair 1 (AN2+3) data ready bit
-    ADSTATbits.P2RDY = 0; // Clear Pair 2 (AN4+5) data ready bit
-    ADSTATbits.P4RDY = 0; // Clear Pair 4 (AN8+9) data ready bit
-    ADSTATbits.P5RDY = 0; // Clear Pair 5 (AN10+11) data ready bit
 
-    ADCPC0bits.TRGSRC0 = 14; // PWM1S is Trigger for AN0+1
-    ADCPC0bits.TRGSRC1 = 15; // PWM2S is Trigger for AN2+3
-    ADCPC1bits.TRGSRC2 = 15; // PWM2S is Trigger for AN4+5
-    ADCPC2bits.TRGSRC4 = 31; // Timer2 period is Trigger for AN8+9
-    ADCPC2bits.TRGSRC5 = 31; // Timer2 period is Trigger for AN10+11
+    ADSTATbits.P0RDY = 0; /* Clear Pair 0 data ready bit */
+    //ADCPC0bits.IRQEN0 = 1; /* Enable ADC Interrupt for Buck 1 control loop */
+    ADCPC0bits.TRGSRC0 = 4; /* ADC Pair 0 triggered by PWM1 */
 
+    ADSTATbits.P1RDY = 0; /* Clear Pair 1 data ready bit */
+    //ADCPC0bits.IRQEN1 = 1; /* Enable ADC Interrupt for Buck 2 control loop */
+    ADCPC0bits.TRGSRC1 = 5; /* ADC Pair 1 triggered by PWM2 */ 
+
+    IFS6bits.ADCP0IF = 0; /* Clear ADC interrupt flag */
+    //IPC27bits.ADCP0IP = 5; /* Set ADC interrupt priority */
+    //IEC6bits.ADCP0IE = 1; /* Enable the ADC Pair 0 interrupt */
+
+    IFS6bits.ADCP1IF = 0; /* Clear ADC interrupt flag */
+    //IPC27bits.ADCP1IP = 5; /* Set ADC interrupt priority */
+    IEC6bits.ADCP1IE = 1; /* Enable the ADC Pair 1 interrupt */
+    
     ADCONbits.ADON = 1; // Enable ADC module
 }
 /***************************************************************************

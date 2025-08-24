@@ -608,9 +608,11 @@ int main(void) {
     // init_TIMER2();
     // init_INT();
     init_PWM();
+    init_ADC();
     init_Serial();
-    // PWM enable:
-    // PTCONbits.PTEN = 1; // Enable the PWM Module
+    
+    //PWM enable:
+    PTCONbits.PTEN = 1; // Enable the PWM Module
     
         while (1)
     {
