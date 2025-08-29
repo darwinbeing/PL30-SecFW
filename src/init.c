@@ -443,7 +443,7 @@ void init_ADC() {
 
     IFS6bits.ADCP0IF = 0; /* Clear ADC interrupt flag */
     //IPC27bits.ADCP0IP = 5; /* Set ADC interrupt priority */
-    //IEC6bits.ADCP0IE = 1; /* Enable the ADC Pair 0 interrupt */
+    IEC6bits.ADCP0IE = 1; /* Enable the ADC Pair 0 interrupt */
 
     IFS6bits.ADCP1IF = 0; /* Clear ADC interrupt flag */
     //IPC27bits.ADCP1IP = 5; /* Set ADC interrupt priority */

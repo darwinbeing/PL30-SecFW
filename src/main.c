@@ -43,6 +43,9 @@
 #define FCY 40000000UL
 #include <libpic30.h>
 
+#include "dsp.h"
+
+
 /***************************************************************************
 Configuration Bit Settings
  ***************************************************************************/
@@ -99,6 +102,54 @@ Configuration Bit Settings
 #pragma config HYST1 = HYST45           // Comparator Hysteresis 1 (45 mV)
 #pragma config CMPPOL1 = POL_FALL       // Comparator Polarity 1 (Hysteresis on falling edge)
 
+
+tPID Buck1VoltagePID;
+
+
+fractional Buck1VoltageABC[3] __attribute__((section(".xbss, bss, xmemory")));
+fractional Buck1VoltageHistory[3] __attribute__((section(".ybss, bss, ymemory")));
+
+#define KP 0.08
+#define KI 0.01
+#define KD 0.3
+
+#define PID_BUCK1_KP KP
+#define PID_BUCK1_KI KI
+#define PID_BUCK1_KD KD
+
+
+#define PID_BUCK1_A Q15(PID_BUCK1_KP + PID_BUCK1_KI + PID_BUCK1_KD)
+#define PID_BUCK1_B Q15(-1 *(PID_BUCK1_KP + 2 * PID_BUCK1_KD))
+#define PID_BUCK1_C Q15(PID_BUCK1_KD)
+
+#define PID_BUCK1_VOLTAGE_REFERENCE 0
+
+#define PID_BUCK1_VOLTAGE_MIN 	      29038  
+
+
+
+
+void buck1_pid_init(void) {
+    Buck1VoltagePID.abcCoefficients = Buck1VoltageABC; /* Set up pointer to derived coefficients */
+    Buck1VoltagePID.controlHistory = Buck1VoltageHistory; /* Set up pointer to controller history samples */
+
+    PIDInit(&Buck1VoltagePID);
+
+    if ((PID_BUCK1_A == 0x7FFF || PID_BUCK1_A == 0x8000) ||
+        (PID_BUCK1_B == 0x7FFF || PID_BUCK1_B == 0x8000) ||
+        (PID_BUCK1_C == 0x7FFF || PID_BUCK1_C == 0x8000)) {
+        while (1); /* This is a check for PID Coefficients being saturated */
+    }
+
+    Buck1VoltagePID.abcCoefficients[0] = PID_BUCK1_A; /* Load calculated coefficients */
+    Buck1VoltagePID.abcCoefficients[1] = PID_BUCK1_B;
+    Buck1VoltagePID.abcCoefficients[2] = PID_BUCK1_C;
+
+    Buck1VoltagePID.controlReference = PID_BUCK1_VOLTAGE_MIN;
+
+    Buck1VoltagePID.measuredOutput = 0;
+
+}
 
 // Bootloader prototypes
 void EZBL_BootloaderInit(void);
@@ -586,13 +637,13 @@ void process_cmd()
 
         case 8:
             send_cmd2(0x2c, 0);
-            process_step = 0;  
+            process_step = 0;
             break;
 
         default:
             process_step = 0;
             break;
-    }    
+    }
 }
 /***************************************************************************
 Function: 	main
@@ -610,10 +661,12 @@ int main(void) {
     init_PWM();
     init_ADC();
     init_Serial();
-    
+
+    buck1_pid_init();
+
     //PWM enable:
     PTCONbits.PTEN = 1; // Enable the PWM Module
-    
+
         while (1)
     {
         uart1_send_byte(0x50);

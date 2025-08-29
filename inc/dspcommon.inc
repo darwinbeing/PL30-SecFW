@@ -72,8 +72,10 @@
         .endif  ; ]
 
         ; Operational modes for Program Space Visibility.
+	.ifdef __dsPIC33F
         .equ    PSV_ON,1<<2                     ; program space visible in
                                                 ; data space
+	.endif
 
 ;............................................................................
 
