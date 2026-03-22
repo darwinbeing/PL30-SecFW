@@ -51,17 +51,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=../src/i2c.c ../src/init.c ../src/main.c ../src/serial.c ../src/control_dcdc.s ../ezbl_uart_dual_partition.c ../src/adc.c ../src/asm/pid.s ../src/asm/delay.s
+SOURCEFILES_QUOTED_IF_SPACED=../src/asm/pid.s ../src/asm/delay.s ../src/i2c.c ../src/init.c ../src/main.c ../src/serial.c ../src/control_dcdc.s ../ezbl_uart_dual_partition.c ../src/adc.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/_ext/1360937237/i2c.o ${OBJECTDIR}/_ext/1360937237/init.o ${OBJECTDIR}/_ext/1360937237/main.o ${OBJECTDIR}/_ext/1360937237/serial.o ${OBJECTDIR}/_ext/1360937237/control_dcdc.o ${OBJECTDIR}/_ext/1472/ezbl_uart_dual_partition.o ${OBJECTDIR}/_ext/1360937237/adc.o ${OBJECTDIR}/_ext/659850881/pid.o ${OBJECTDIR}/_ext/659850881/delay.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/_ext/1360937237/i2c.o.d ${OBJECTDIR}/_ext/1360937237/init.o.d ${OBJECTDIR}/_ext/1360937237/main.o.d ${OBJECTDIR}/_ext/1360937237/serial.o.d ${OBJECTDIR}/_ext/1360937237/control_dcdc.o.d ${OBJECTDIR}/_ext/1472/ezbl_uart_dual_partition.o.d ${OBJECTDIR}/_ext/1360937237/adc.o.d ${OBJECTDIR}/_ext/659850881/pid.o.d ${OBJECTDIR}/_ext/659850881/delay.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/_ext/659850881/pid.o ${OBJECTDIR}/_ext/659850881/delay.o ${OBJECTDIR}/_ext/1360937237/i2c.o ${OBJECTDIR}/_ext/1360937237/init.o ${OBJECTDIR}/_ext/1360937237/main.o ${OBJECTDIR}/_ext/1360937237/serial.o ${OBJECTDIR}/_ext/1360937237/control_dcdc.o ${OBJECTDIR}/_ext/1472/ezbl_uart_dual_partition.o ${OBJECTDIR}/_ext/1360937237/adc.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/_ext/659850881/pid.o.d ${OBJECTDIR}/_ext/659850881/delay.o.d ${OBJECTDIR}/_ext/1360937237/i2c.o.d ${OBJECTDIR}/_ext/1360937237/init.o.d ${OBJECTDIR}/_ext/1360937237/main.o.d ${OBJECTDIR}/_ext/1360937237/serial.o.d ${OBJECTDIR}/_ext/1360937237/control_dcdc.o.d ${OBJECTDIR}/_ext/1472/ezbl_uart_dual_partition.o.d ${OBJECTDIR}/_ext/1360937237/adc.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/_ext/1360937237/i2c.o ${OBJECTDIR}/_ext/1360937237/init.o ${OBJECTDIR}/_ext/1360937237/main.o ${OBJECTDIR}/_ext/1360937237/serial.o ${OBJECTDIR}/_ext/1360937237/control_dcdc.o ${OBJECTDIR}/_ext/1472/ezbl_uart_dual_partition.o ${OBJECTDIR}/_ext/1360937237/adc.o ${OBJECTDIR}/_ext/659850881/pid.o ${OBJECTDIR}/_ext/659850881/delay.o
+OBJECTFILES=${OBJECTDIR}/_ext/659850881/pid.o ${OBJECTDIR}/_ext/659850881/delay.o ${OBJECTDIR}/_ext/1360937237/i2c.o ${OBJECTDIR}/_ext/1360937237/init.o ${OBJECTDIR}/_ext/1360937237/main.o ${OBJECTDIR}/_ext/1360937237/serial.o ${OBJECTDIR}/_ext/1360937237/control_dcdc.o ${OBJECTDIR}/_ext/1472/ezbl_uart_dual_partition.o ${OBJECTDIR}/_ext/1360937237/adc.o
 
 # Source Files
-SOURCEFILES=../src/i2c.c ../src/init.c ../src/main.c ../src/serial.c ../src/control_dcdc.s ../ezbl_uart_dual_partition.c ../src/adc.c ../src/asm/pid.s ../src/asm/delay.s
+SOURCEFILES=../src/asm/pid.s ../src/asm/delay.s ../src/i2c.c ../src/init.c ../src/main.c ../src/serial.c ../src/control_dcdc.s ../ezbl_uart_dual_partition.c ../src/adc.c
 
 
 
@@ -167,12 +167,6 @@ endif
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: assemble
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
-${OBJECTDIR}/_ext/1360937237/control_dcdc.o: ../src/control_dcdc.s  .generated_files/flags/default/d41a35f9b23c151fb2e1dc239bcfc9ef28955ddd .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
-	@${MKDIR} "${OBJECTDIR}/_ext/1360937237" 
-	@${RM} ${OBJECTDIR}/_ext/1360937237/control_dcdc.o.d 
-	@${RM} ${OBJECTDIR}/_ext/1360937237/control_dcdc.o 
-	${MP_CC} $(MP_EXTRA_AS_PRE)  ../src/control_dcdc.s  -o ${OBJECTDIR}/_ext/1360937237/control_dcdc.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -D__DEBUG   -omf=elf -DXPRJ_default=$(CND_CONF)    -I"../inc" -I".." -Wa,-MD,"${OBJECTDIR}/_ext/1360937237/control_dcdc.o.d",--defsym=__MPLAB_BUILD=1,--defsym=__ICD2RAM=1,--defsym=__MPLAB_DEBUG=1,--defsym=__DEBUG=1,,-g,--no-relax,-g$(MP_EXTRA_AS_POST)  -mdfp="${DFP_DIR}/xc16"
-	
 ${OBJECTDIR}/_ext/659850881/pid.o: ../src/asm/pid.s  .generated_files/flags/default/32574f284f5bd1f7cb44f90cd12a4d2b5641c820 .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
 	@${MKDIR} "${OBJECTDIR}/_ext/659850881" 
 	@${RM} ${OBJECTDIR}/_ext/659850881/pid.o.d 
@@ -185,13 +179,13 @@ ${OBJECTDIR}/_ext/659850881/delay.o: ../src/asm/delay.s  .generated_files/flags/
 	@${RM} ${OBJECTDIR}/_ext/659850881/delay.o 
 	${MP_CC} $(MP_EXTRA_AS_PRE)  ../src/asm/delay.s  -o ${OBJECTDIR}/_ext/659850881/delay.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -D__DEBUG   -omf=elf -DXPRJ_default=$(CND_CONF)    -I"../inc" -I".." -Wa,-MD,"${OBJECTDIR}/_ext/659850881/delay.o.d",--defsym=__MPLAB_BUILD=1,--defsym=__ICD2RAM=1,--defsym=__MPLAB_DEBUG=1,--defsym=__DEBUG=1,,-g,--no-relax,-g$(MP_EXTRA_AS_POST)  -mdfp="${DFP_DIR}/xc16"
 	
-else
-${OBJECTDIR}/_ext/1360937237/control_dcdc.o: ../src/control_dcdc.s  .generated_files/flags/default/f9879979b32ae6d4191d4733bd1c9e2922c7373f .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
+${OBJECTDIR}/_ext/1360937237/control_dcdc.o: ../src/control_dcdc.s  .generated_files/flags/default/d41a35f9b23c151fb2e1dc239bcfc9ef28955ddd .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
 	@${MKDIR} "${OBJECTDIR}/_ext/1360937237" 
 	@${RM} ${OBJECTDIR}/_ext/1360937237/control_dcdc.o.d 
 	@${RM} ${OBJECTDIR}/_ext/1360937237/control_dcdc.o 
-	${MP_CC} $(MP_EXTRA_AS_PRE)  ../src/control_dcdc.s  -o ${OBJECTDIR}/_ext/1360937237/control_dcdc.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -omf=elf -DXPRJ_default=$(CND_CONF)    -I"../inc" -I".." -Wa,-MD,"${OBJECTDIR}/_ext/1360937237/control_dcdc.o.d",--defsym=__MPLAB_BUILD=1,-g,--no-relax,-g$(MP_EXTRA_AS_POST)  -mdfp="${DFP_DIR}/xc16"
+	${MP_CC} $(MP_EXTRA_AS_PRE)  ../src/control_dcdc.s  -o ${OBJECTDIR}/_ext/1360937237/control_dcdc.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -D__DEBUG   -omf=elf -DXPRJ_default=$(CND_CONF)    -I"../inc" -I".." -Wa,-MD,"${OBJECTDIR}/_ext/1360937237/control_dcdc.o.d",--defsym=__MPLAB_BUILD=1,--defsym=__ICD2RAM=1,--defsym=__MPLAB_DEBUG=1,--defsym=__DEBUG=1,,-g,--no-relax,-g$(MP_EXTRA_AS_POST)  -mdfp="${DFP_DIR}/xc16"
 	
+else
 ${OBJECTDIR}/_ext/659850881/pid.o: ../src/asm/pid.s  .generated_files/flags/default/551996bad62f324351e995d913c5bef229056c53 .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
 	@${MKDIR} "${OBJECTDIR}/_ext/659850881" 
 	@${RM} ${OBJECTDIR}/_ext/659850881/pid.o.d 
@@ -203,6 +197,12 @@ ${OBJECTDIR}/_ext/659850881/delay.o: ../src/asm/delay.s  .generated_files/flags/
 	@${RM} ${OBJECTDIR}/_ext/659850881/delay.o.d 
 	@${RM} ${OBJECTDIR}/_ext/659850881/delay.o 
 	${MP_CC} $(MP_EXTRA_AS_PRE)  ../src/asm/delay.s  -o ${OBJECTDIR}/_ext/659850881/delay.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -omf=elf -DXPRJ_default=$(CND_CONF)    -I"../inc" -I".." -Wa,-MD,"${OBJECTDIR}/_ext/659850881/delay.o.d",--defsym=__MPLAB_BUILD=1,-g,--no-relax,-g$(MP_EXTRA_AS_POST)  -mdfp="${DFP_DIR}/xc16"
+	
+${OBJECTDIR}/_ext/1360937237/control_dcdc.o: ../src/control_dcdc.s  .generated_files/flags/default/f9879979b32ae6d4191d4733bd1c9e2922c7373f .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
+	@${MKDIR} "${OBJECTDIR}/_ext/1360937237" 
+	@${RM} ${OBJECTDIR}/_ext/1360937237/control_dcdc.o.d 
+	@${RM} ${OBJECTDIR}/_ext/1360937237/control_dcdc.o 
+	${MP_CC} $(MP_EXTRA_AS_PRE)  ../src/control_dcdc.s  -o ${OBJECTDIR}/_ext/1360937237/control_dcdc.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -omf=elf -DXPRJ_default=$(CND_CONF)    -I"../inc" -I".." -Wa,-MD,"${OBJECTDIR}/_ext/1360937237/control_dcdc.o.d",--defsym=__MPLAB_BUILD=1,-g,--no-relax,-g$(MP_EXTRA_AS_POST)  -mdfp="${DFP_DIR}/xc16"
 	
 endif
 

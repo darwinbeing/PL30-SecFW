@@ -50,5 +50,3 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
-/ex_app_live_update_smps_v3/build/
-/Interleaved Forward Conv.X/build/
